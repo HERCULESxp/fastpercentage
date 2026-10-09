@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#111827">
+<meta name="description" content="Treine porcentagem de cabeça contra o relógio.">
+<meta name="application-name" content="Porcentagem Relâmpago">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Porcentagem">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Porcentagem Relâmpago</title>
+<style>
+:root{--bg:#0b1020;--panel:#151d32;--panel2:#1c2740;--text:#f5f7ff;--muted:#9aa8c4;--accent:#7c5cff;--cyan:#39d5d2;--good:#20c997;--bad:#ff5d73}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#202a4c 0%,var(--bg) 58%);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:flex;justify-content:center;padding:22px}
+button,select{font:inherit}button{cursor:pointer;border:0}
+.app{width:min(760px,100%);margin:auto}.brand{text-align:center;margin-bottom:22px}.brand .symbol{display:inline-grid;place-items:center;width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--accent),#4a9cff);font-size:25px;box-shadow:0 8px 25px #6547ff44}.brand h1{font-size:clamp(1.7rem,5vw,2.5rem);margin:12px 0 5px;letter-spacing:-.04em}.brand p{color:var(--muted);margin:0}
+.panel{background:linear-gradient(160deg,#19233b,#121a2c);border:1px solid #ffffff13;border-radius:24px;padding:clamp(18px,4vw,30px);box-shadow:0 22px 70px #0003}
+h2{font-size:1.2rem;margin:0 0 20px}.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.field{display:flex;flex-direction:column;gap:8px}.field label{font-weight:650;font-size:.93rem}.field small{color:var(--muted);font-size:.8rem}.field select{width:100%;background:#0d1426;color:var(--text);border:1px solid #34415e;border-radius:12px;padding:13px 12px;outline:none}.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #7c5cff2a}.full{grid-column:1/-1}.primary{background:linear-gradient(135deg,var(--accent),#5c7cff);color:white;font-weight:800;border-radius:14px;padding:15px 20px;box-shadow:0 8px 25px #6547ff35;transition:transform .15s,filter .15s}.primary:hover{filter:brightness(1.1);transform:translateY(-1px)}.primary:active{transform:scale(.99)}.fullbtn{width:100%;margin-top:22px}
+.hidden{display:none!important}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.pill{background:#26324d;color:#d9e1f8;padding:8px 12px;border-radius:999px;font-size:.85rem;font-weight:700}.quiet-btn{background:transparent;color:var(--muted);padding:8px 4px}.quiet-btn:hover{color:white}.progress{height:7px;background:#27324b;border-radius:10px;overflow:hidden;margin-bottom:24px}.progress span{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--cyan),var(--accent));transition:width .1s linear}
+.timer-row{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.9rem;margin-bottom:12px}.timer-num{font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}.question{font-size:clamp(2.1rem,8vw,4rem);font-weight:900;text-align:center;letter-spacing:-.045em;margin:22px 0 28px}.question .pct{color:var(--cyan)}.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.answer{background:#202c47;border:1px solid #354360;color:white;border-radius:15px;padding:17px 10px;font-size:clamp(1.05rem,3.5vw,1.35rem);font-weight:800;min-height:66px;overflow-wrap:anywhere;transition:background .15s,border .15s,transform .15s}.answer:hover:not(:disabled){background:#2c3b5d;border-color:#8a78ff;transform:translateY(-2px)}.answer:disabled{cursor:default}.answer.correct{background:#0d4a43;border-color:var(--good);color:#8ff5d8}.answer.wrong{background:#552433;border-color:var(--bad);color:#ffb2be}.feedback{min-height:28px;text-align:center;font-weight:800;margin-top:18px}.feedback.good{color:var(--good)}.feedback.bad{color:var(--bad)}.hint{text-align:center;color:var(--muted);font-size:.85rem;margin-top:8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}.stat{background:#0e1628;border:1px solid #ffffff0d;border-radius:15px;padding:13px;text-align:center}.stat strong{display:block;font-size:1.5rem;font-variant-numeric:tabular-nums}.stat span{font-size:.78rem;color:var(--muted)}.result{text-align:center}.result .emoji{font-size:3rem}.result h2{font-size:1.8rem;margin:10px 0}.result p{color:var(--muted);line-height:1.6}.result-actions{display:flex;gap:10px;margin-top:22px}.result-actions button{flex:1}.secondary{background:#26324d;color:white;border:1px solid #3a4969;border-radius:14px;padding:14px;font-weight:750}
+footer{text-align:center;color:#6f7e9c;font-size:.78rem;margin:18px 0 0}
+@media(max-width:520px){body{padding:14px}.settings-grid{grid-template-columns:1fr}.full{grid-column:auto}.topbar{align-items:flex-start}.answers{gap:9px}.answer{padding:15px 7px;min-height:62px}.stats{gap:7px}.stat{padding:11px 5px}.stat strong{font-size:1.25rem}.result-actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="brand"><div class="symbol">％</div><h1>Porcentagem Relâmpago</h1><p>Treine a mente. Responda rápido. Evolua a cada rodada.</p></header>
+  <section id="settings" class="panel">
+    <h2>⚙️ Configure seu treino</h2>
+    <div class="settings-grid">
+      <div class="field"><label for="digits">Quantidade de algarismos</label><select id="digits"><option value="1">1 algarismo (1–9)</option><option value="2" selected>2 algarismos (10–99)</option><option value="3">3 algarismos (100–999)</option><option value="4">4 algarismos</option><option value="5">5 algarismos</option><option value="6">6 algarismos</option><option value="7">7 algarismos</option><option value="8">8 algarismos</option><option value="9">9 algarismos</option></select><small>O número muda a cada pergunta.</small></div>
+      <div class="field"><label for="percentage">Porcentagem</label><select id="percentage"><option value="random">🎲 Aleatória (10% a 90%)</option><option value="10">10%</option><option value="20">20%</option><option value="30" selected>30%</option><option value="40">40%</option><option value="50">50%</option><option value="60">60%</option><option value="70">70%</option><option value="80">80%</option><option value="90">90%</option></select><small>Escolha uma faixa ou misture todas.</small></div>
+      <div class="field"><label for="seconds">Tempo por pergunta</label><select id="seconds"><option value="3">3 segundos — insano</option><option value="5" selected>5 segundos — rápido</option><option value="8">8 segundos</option><option value="10">10 segundos</option><option value="15">15 segundos</option><option value="20">20 segundos</option><option value="30">30 segundos</option></select><small>O cronômetro reinicia em cada rodada.</small></div>
+      <div class="field"><label for="rounds">Duração do treino</label><select id="rounds"><option value="10">10 perguntas</option><option value="20" selected>20 perguntas</option><option value="30">30 perguntas</option><option value="50">50 perguntas</option><option value="0">Infinito — até parar</option></select><small>Veja seu desempenho no final.</small></div>
+    </div>
+    <button id="start" class="primary fullbtn">Começar treino →</button>
+  </section>
+
+  <section id="game" class="panel hidden" aria-live="polite">
+    <div class="topbar"><span id="roundLabel" class="pill">Pergunta 1/20</span><span id="scoreLabel" class="pill">✓ 0 acertos</span><button id="quit" class="quiet-btn">Sair ✕</button></div>
+    <div class="progress"><span id="progressBar"></span></div>
+    <div class="timer-row"><span>⏱ Tempo restante</span><span class="timer-num"><span id="timeLabel">5.0</span>s</span></div>
+    <div class="question"><span class="pct" id="qPercent">30%</span> <span id="qNumber">× 24</span></div>
+    <div id="answers" class="answers"></div>
+    <div id="feedback" class="feedback" role="status"></div>
+    <div class="hint">Escolha uma resposta. A próxima pergunta vem automaticamente.</div>
+  </section>
+
+  <section id="results" class="panel hidden">
+    <div class="result"><div class="emoji">🏁</div><h2>Treino concluído!</h2><p id="resultMessage">Veja como você foi.</p></div>
+    <div class="stats">
+      <div class="stat"><strong id="finalScore">0/20</strong><span>Acertos</span></div>
+      <div class="stat"><strong id="finalAccuracy">0%</strong><span>Precisão</span></div>
+      <div class="stat"><strong id="finalAvg">0,0s</strong><span>Tempo médio</span></div>
+    </div>
+    <div class="result-actions"><button id="again" class="primary">Jogar novamente ↻</button><button id="change" class="secondary">Mudar configurações</button></div>
+  </section>
+  <footer>Feito para treinar cálculo mental • Sem pressão, só progresso.</footer>
+</main>
+<script>
+(() => {
+ const $ = id => document.getElementById(id);
+ const settings = $('settings'), game = $('game'), results = $('results');
+ let total=20, questionNo=0, correct=0, wrong=0, timedOut=0, startedAt=0, questionStarted=0, timer=null, advanceTimer=null, locked=false, elapsedTotal=0, current={};
+ const pctOptions=[10,20,30,40,50,60,70,80,90];
+ const fmt=n => Number.isInteger(n) ? n.toLocaleString('pt-BR') : n.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:2});
+ function show(section){[settings,game,results].forEach(s=>s.classList.add('hidden'));section.classList.remove('hidden')}
+ function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+ function start(){total=Number($('rounds').value);questionNo=correct=wrong=timedOut=0;elapsedTotal=0;show(game);newQuestion()}
+ function newQuestion(){
+   clearInterval(timer);clearTimeout(advanceTimer);locked=false;
+   if(total!==0 && questionNo>=total){finish();return}
+   questionNo++;
+   const digits=Number($('digits').value), min=digits===1?1:10**(digits-1), max=10**digits-1;
+   const number=randInt(min,max), chosen=$('percentage').value;
+   const pct=chosen==='random'?pctOptions[randInt(0,8)]:Number(chosen);
+   const answer=number*pct/100;
+   current={number,pct,answer,options:makeOptions(answer,number)};
+   $('roundLabel').textContent=total===0?`Pergunta ${questionNo}`:`Pergunta ${questionNo}/${total}`;
+   $('scoreLabel').textContent=`✓ ${correct} acertos`;
+   $('qPercent').textContent=`${pct}%`; $('qNumber').textContent=`× ${fmt(number)}`;
+   $('feedback').textContent='';$('feedback').className='feedback';
+   $('answers').innerHTML='';
+   current.options.forEach(value=>{
+     const b=document.createElement('button');b.className='answer';b.textContent=fmt(value);b.addEventListener('click',()=>choose(value,b));$('answers').appendChild(b);
+   });
+   const seconds=Number($('seconds').value);questionStarted=performance.now();
+   $('timeLabel').textContent=seconds.toFixed(1);$('progressBar').style.width='100%';
+   timer=setInterval(()=>{
+     const remaining=Math.max(0,seconds-(performance.now()-questionStarted)/1000);
+     $('timeLabel').textContent=remaining.toFixed(1);$('progressBar').style.width=(remaining/seconds*100)+'%';
+     if(remaining<=0){clearInterval(timer);if(!locked)timeout()}
+   },50);
+ }
+ function makeOptions(answer,number){
+   const vals=new Set([answer]);
+   const scale=answer>=1000?Math.max(10,Math.round(answer*.08)):answer>=100?Math.max(5,Math.round(answer*.15)):Math.max(1,Math.round(number*.12));
+   let attempts=0;
+   while(vals.size<4 && attempts++<100){
+     let v;
+     const mode=randInt(0,2);
+     if(mode===0) v=answer+randInt(-5,5)*scale/5;
+     else if(mode===1) v=answer+randInt(-3,3)*Math.max(1,scale);
+     else v=answer*(1+randInt(-20,20)/100);
+     v=Math.max(0,Math.round(v*100)/100);
+     if(v!==answer) vals.add(v);
+   }
+   let extra=1;
+   while(vals.size<4){let v=Math.max(0,Math.round((answer+scale*extra)*100)/100);if(v!==answer)vals.add(v);extra++}
+   return [...vals].sort(()=>Math.random()-.5);
+ }
+ function choose(value,button){
+   if(locked)return;locked=true;clearInterval(timer);
+   const spent=(performance.now()-questionStarted)/1000;elapsedTotal+=Math.min(spent,Number($('seconds').value));
+   const good=Math.abs(value-current.answer)<0.000001;
+   if(good){correct++;button.classList.add('correct');$('feedback').textContent='✓ Correto!';$('feedback').className='feedback good'}
+   else {wrong++;button.classList.add('wrong');$('feedback').textContent=`✕ Não foi dessa vez. Resposta: ${fmt(current.answer)}`;$('feedback').className='feedback bad';[...$('answers').children].forEach(b=>{if(Math.abs(parseLocale(b.textContent)-current.answer)<0.000001)b.classList.add('correct')})}
+   [...$('answers').children].forEach(b=>b.disabled=true);
+   $('scoreLabel').textContent=`✓ ${correct} acertos`;
+   advanceTimer=setTimeout(newQuestion,1000);
+ }
+ function parseLocale(s){return Number(s.replace(/\./g,'').replace(',','.'))}
+ function timeout(){
+   if(locked)return;locked=true;timedOut++;elapsedTotal+=Number($('seconds').value);
+   $('feedback').textContent=`⌛ Tempo esgotado! Resposta: ${fmt(current.answer)}`;$('feedback').className='feedback bad';
+   [...$('answers').children].forEach(b=>{b.disabled=true;if(Math.abs(parseLocale(b.textContent)-current.answer)<0.000001)b.classList.add('correct')});
+   advanceTimer=setTimeout(newQuestion,1000);
+ }
+ function finish(){
+   clearInterval(timer);clearTimeout(advanceTimer);show(results);
+   const attempted=correct+wrong+timedOut, accuracy=attempted?Math.round(correct/attempted*100):0;
+   $('finalScore').textContent=`${correct}/${attempted}`;$('finalAccuracy').textContent=accuracy+'%';
+   $('finalAvg').textContent=(attempted?elapsedTotal/attempted:0).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'s';
+   $('resultMessage').textContent=`Você acertou ${correct}, errou ${wrong} e ficou sem tempo em ${timedOut} pergunta(s). ${accuracy>=90?'Excelente! Sua agilidade está afiada.':accuracy>=70?'Muito bem! Continue treinando para ganhar velocidade.':'Continue praticando: o segredo é consistência.'}`;
+ }
+ function back(){clearInterval(timer);clearTimeout(advanceTimer);show(settings)}
+ $('start').addEventListener('click',start);$('quit').addEventListener('click',back);$('again').addEventListener('click',start);$('change').addEventListener('click',back);
+ document.addEventListener('keydown',e=>{if(game.classList.contains('hidden')||locked)return;const idx={'1':0,'2':1,'3':2,'4':3}[e.key];if(idx!==undefined){const b=$('answers').children[idx];if(b)b.click()}});
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(() => {}));
+}
+</script>
+</body>
+</html>
